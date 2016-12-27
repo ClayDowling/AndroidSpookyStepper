@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
         listAvailableUart();
         listAvailableI2C();
         connectToGpioPort("BCM21");
+
+        blinkLed();
     }
 
     @Override
@@ -88,19 +90,36 @@ public class MainActivity extends Activity {
         try {
             PeripheralManagerService manager = new PeripheralManagerService();
             gpio = manager.openGpio(gpioName);
-
-            gpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_HIGH);
-            gpio.setActiveType(Gpio.ACTIVE_LOW);
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Log.w(TAG, "Thread sleep exception", e);
-            }
-
-            gpio.setValue(true);
         } catch (IOException e) {
             Log.w(TAG, "Unable to access GPIO", e);
         }
+    }
+
+    private void blinkLed() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    gpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_HIGH);
+                    gpio.setActiveType(Gpio.ACTIVE_LOW);
+
+                    long startTime = System.currentTimeMillis();
+                    long targetTime = startTime + 1000;
+                    while (true) {
+                        Thread.yield();
+                        if (System.currentTimeMillis() > targetTime) {
+                            startTime = System.currentTimeMillis();
+                            targetTime = startTime + 1000;
+                            gpio.setValue(!gpio.getValue());
+                        }
+                    }
+
+                } catch (IOException e) {
+                    Log.w(TAG, "GPIO Exception", e);
+                }
+            }
+        }).start();
+
     }
 }
