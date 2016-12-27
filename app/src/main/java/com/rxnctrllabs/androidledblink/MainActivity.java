@@ -27,6 +27,9 @@ public class MainActivity extends Activity {
         super.onPostCreate(savedInstanceState);
 
         listAvailableGpio();
+        listAvailablePwm();
+        listAvailableUart();
+        listAvailableI2C();
         connectToGpioPort("BCM21");
     }
 
@@ -45,9 +48,40 @@ public class MainActivity extends Activity {
         TextView availableGpioText = (TextView) findViewById(R.id.availableGpioText);
 
         PeripheralManagerService manager = new PeripheralManagerService();
-        List<String> portList = manager.getGpioList();
+        List<String> gpioList = manager.getGpioList();
 
-        availableGpioText.setText(portList.toString());
+        String text = "GPIO: " + gpioList.toString();
+        availableGpioText.setText(text);
+    }
+
+    private void listAvailablePwm() {
+        TextView availablePwmText = (TextView) findViewById(R.id.availablePwmText);
+
+        PeripheralManagerService manager = new PeripheralManagerService();
+        List<String> pwmList = manager.getPwmList();
+
+        String text = "PWM: " + pwmList.toString();
+        availablePwmText.setText(text);
+    }
+
+    private void listAvailableUart() {
+        TextView availableUartText = (TextView) findViewById(R.id.availableUartText);
+
+        PeripheralManagerService manager = new PeripheralManagerService();
+        List<String> uartList = manager.getUartDeviceList();
+
+        String text = "UART: " + uartList.toString();
+        availableUartText.setText(text);
+    }
+
+    private void listAvailableI2C() {
+        TextView availableI2CText = (TextView) findViewById(R.id.availableI2CText);
+
+        PeripheralManagerService manager = new PeripheralManagerService();
+        List<String> i2cList = manager.getI2cBusList();
+
+        String text = "I2C: " + i2cList.toString();
+        availableI2CText.setText(text);
     }
 
     private void connectToGpioPort(String gpioName) {
