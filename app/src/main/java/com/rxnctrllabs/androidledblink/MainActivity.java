@@ -1,6 +1,5 @@
 package com.rxnctrllabs.androidledblink;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -11,15 +10,23 @@ import com.google.android.things.pio.PeripheralManagerService;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends Activity {
+import javax.inject.Inject;
+
+public class MainActivity extends BaseBlinkActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    @Inject
+    PeripheralManagerService service;
+
     private Gpio gpio = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getBlinkApplication().getApplicationComponent().inject(this);
     }
 
     @Override
@@ -32,14 +39,14 @@ public class MainActivity extends Activity {
         listAvailableI2C();
         connectToGpioPort("BCM21");
 
-        blinkLed();
+        blinkLED();
     }
 
     @Override
     protected void onDestroy() {
-        if (null != gpio)
+        if (null != this.gpio)
             try {
-                gpio.close();
+                this.gpio.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,40 +54,36 @@ public class MainActivity extends Activity {
     }
 
     private void listAvailableGpio() {
-        TextView availableGpioText = (TextView) findViewById(R.id.availableGpioText);
+        TextView availableGpioText = findViewById(R.id.availableGpioText, TextView.class);
 
-        PeripheralManagerService manager = new PeripheralManagerService();
-        List<String> gpioList = manager.getGpioList();
+        List<String> gpioList = this.service.getGpioList();
 
         String text = "GPIO: " + gpioList.toString();
         availableGpioText.setText(text);
     }
 
     private void listAvailablePwm() {
-        TextView availablePwmText = (TextView) findViewById(R.id.availablePwmText);
+        TextView availablePwmText = findViewById(R.id.availablePwmText, TextView.class);
 
-        PeripheralManagerService manager = new PeripheralManagerService();
-        List<String> pwmList = manager.getPwmList();
+        List<String> pwmList = this.service.getPwmList();
 
         String text = "PWM: " + pwmList.toString();
         availablePwmText.setText(text);
     }
 
     private void listAvailableUart() {
-        TextView availableUartText = (TextView) findViewById(R.id.availableUartText);
+        TextView availableUartText = findViewById(R.id.availableUartText, TextView.class);
 
-        PeripheralManagerService manager = new PeripheralManagerService();
-        List<String> uartList = manager.getUartDeviceList();
+        List<String> uartList = this.service.getUartDeviceList();
 
         String text = "UART: " + uartList.toString();
         availableUartText.setText(text);
     }
 
     private void listAvailableI2C() {
-        TextView availableI2CText = (TextView) findViewById(R.id.availableI2CText);
+        TextView availableI2CText = findViewById(R.id.availableI2CText, TextView.class);
 
-        PeripheralManagerService manager = new PeripheralManagerService();
-        List<String> i2cList = manager.getI2cBusList();
+        List<String> i2cList = this.service.getI2cBusList();
 
         String text = "I2C: " + i2cList.toString();
         availableI2CText.setText(text);
@@ -89,20 +92,20 @@ public class MainActivity extends Activity {
     private void connectToGpioPort(String gpioName) {
         try {
             PeripheralManagerService manager = new PeripheralManagerService();
-            gpio = manager.openGpio(gpioName);
+            this.gpio = manager.openGpio(gpioName);
         } catch (IOException e) {
             Log.w(TAG, "Unable to access GPIO", e);
         }
     }
 
-    private void blinkLed() {
-
+    private void blinkLED() {
         new Thread(new Runnable() {
+
             @Override
             public void run() {
                 try {
-                    gpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_HIGH);
-                    gpio.setActiveType(Gpio.ACTIVE_LOW);
+                    MainActivity.this.gpio.setDirection(Gpio.DIRECTION_OUT_INITIALLY_HIGH);
+                    MainActivity.this.gpio.setActiveType(Gpio.ACTIVE_LOW);
 
                     long startTime = System.currentTimeMillis();
                     long targetTime = startTime + 1000;
@@ -111,7 +114,7 @@ public class MainActivity extends Activity {
                         if (System.currentTimeMillis() > targetTime) {
                             startTime = System.currentTimeMillis();
                             targetTime = startTime + 1000;
-                            gpio.setValue(!gpio.getValue());
+                            MainActivity.this.gpio.setValue(!MainActivity.this.gpio.getValue());
                         }
                     }
 
@@ -120,6 +123,5 @@ public class MainActivity extends Activity {
                 }
             }
         }).start();
-
     }
 }
