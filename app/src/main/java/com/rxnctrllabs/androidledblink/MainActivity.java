@@ -11,8 +11,17 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
 
 public class MainActivity extends BaseBlinkActivity {
+
+    @Singleton
+    @Component(modules = {PeripheralManagerServiceModule.class})
+    public interface Injector {
+        void inject(MainActivity mainActivity);
+    }
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -26,7 +35,7 @@ public class MainActivity extends BaseBlinkActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getBlinkApplication().getApplicationComponent().inject(this);
+        DaggerMainActivity_Injector.create().inject(this);
     }
 
     @Override
