@@ -46,7 +46,7 @@ public class MainActivity extends BaseThinkActivity {
 
         connectToGpioPort();
 
-        blinkLED();
+        moveMotor();
     }
 
     @Override
@@ -71,8 +71,10 @@ public class MainActivity extends BaseThinkActivity {
         }
     }
 
-    private void blinkLED() {
+    private void moveMotor() {
         new Thread(new Runnable() {
+
+            private int delay = 50;
 
             @Override
             public void run() {
@@ -81,13 +83,15 @@ public class MainActivity extends BaseThinkActivity {
                     MainActivity.this.stepPort.setActiveType(Gpio.ACTIVE_LOW);
 
                     long startTime = System.currentTimeMillis();
-                    long targetTime = startTime + 1000;
+                    long targetTime = startTime + delay;
                     while (true) {
                         Thread.yield();
+                        MainActivity.this.stepPort.setValue(true);
                         if (System.currentTimeMillis() > targetTime) {
                             startTime = System.currentTimeMillis();
-                            targetTime = startTime + 1000;
-                            MainActivity.this.stepPort.setValue(!MainActivity.this.stepPort.getValue());
+                            targetTime = startTime + delay;
+                            MainActivity.this.stepPort.setValue(true);
+                            MainActivity.this.stepPort.setValue(false);
                         }
                     }
 
