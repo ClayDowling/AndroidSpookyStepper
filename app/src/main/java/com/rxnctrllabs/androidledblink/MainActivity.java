@@ -15,7 +15,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-public class MainActivity extends BaseBlinkActivity {
+public class MainActivity extends BaseThinkActivity {
 
     @Singleton
     @Component(modules = {PeripheralManagerServiceModule.class})

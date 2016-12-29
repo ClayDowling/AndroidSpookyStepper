@@ -16,30 +16,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginTop="21dp"
-        android:id="@+id/availableGpioText"
-        android:text="GPIO Ports"/>
+        android:id="@+id/stateText"
+        android:text="State: "/>
 
     <TextView
-        android:text="PWM"
+        android:text="Direction: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/availablePwmText"
-        android:layout_below="@+id/availableGpioText"
+        android:id="@+id/directionText"
+        android:layout_below="@+id/stateText"
         android:layout_alignParentStart="true"/>
 
     <TextView
-        android:text="UART"
+        android:text="Steps: "
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/availablePwmText"
+        android:layout_below="@+id/directionText"
         android:layout_alignParentStart="true"
-        android:id="@+id/availableUartText"/>
+        android:id="@+id/stepsText"/>
 
-    <TextView
-        android:text="I2C"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/availableUartText"
-        android:layout_alignParentStart="true"
-        android:id="@+id/availableI2CText"/>
 </RelativeLayout>
