@@ -19,13 +19,16 @@ public class StepperRunnerTest {
     private StepperRunner runner;
 
     private Gpio stepPort;
+    private Gpio dirPort;
 
     @Before
     public void setUp() throws Exception {
         stepPort = mock(Gpio.class);
+        dirPort = mock(Gpio.class);
 
         runner = new StepperRunner();
         runner.stepPort = stepPort;
+        runner.dirPort = dirPort;
     }
 
     @Test
@@ -36,4 +39,9 @@ public class StepperRunnerTest {
         verify(stepPort).setValue(false);
     }
 
+    @Test
+    public void setDirection_givenUp_setsDirPortHigh() throws IOException {
+        runner.setDirection(Direction.UP);
+        verify(dirPort).setValue(true);
+    }
 }

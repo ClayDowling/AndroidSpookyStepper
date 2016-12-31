@@ -17,4 +17,12 @@ public class StepperRunner {
         stepPort.setValue(true);
         stepPort.setValue(false);
     }
+
+    public void setDirection(Direction dir) throws IOException {
+
+        if (Direction.UP == dir) {
+            dirPort.setValue(true);
+        }
+
+    }
 }
