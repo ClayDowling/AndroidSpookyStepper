@@ -1,4 +1,4 @@
-package com.rxnctrllabs.androidledblink;
+package com.lazarusid.spookystepper;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

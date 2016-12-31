@@ -1,4 +1,4 @@
-package com.rxnctrllabs.androidledblink;
+package com.lazarusid.spookystepper;
 
 import com.google.android.things.pio.PeripheralManagerService;
 
